@@ -1,23 +1,10 @@
-import {
-  Inject,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { Order } from 'src/entities/order';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import Order from 'src/entities/order';
+import { getRepository } from 'typeorm';
 
-//orders wines orderitem
-//ftiaxnw databse provider
-//error sta services
 @Injectable()
-export class OrderService {
-  constructor(
-    @Inject('ORDER_REPOSITORY')
-    private orderRepository: Repository<Order>,
-  ) {}
-  private orders: Order[] = [];
-
-  insertOrder = async (orderData: any) => {
+export default class OrderService {
+  async insertOrder(orderData: any) {
     const { name, lastName, orderItems } = orderData;
     const newOrder = new Order();
     newOrder.name = name;
@@ -25,52 +12,54 @@ export class OrderService {
     newOrder.orderItems = orderItems;
 
     try {
-      return this.orderRepository.save(newOrder);
+      return Order.save(newOrder);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error, 'order did not inserted');
     }
-  };
-  getOrders = async () => {
-    return this.orderRepository.find();
-  };
-  getSingleOrder = async (num) => {
+  }
+  async getOrders() {
+    return Order.find({});
+  }
+  async getSingleOrder(num: any) {
     try {
-      const foundOrder = this.orderRepository.findOneBy({
+      return Order.findOne({
         id: parseFloat(num),
       });
-      return foundOrder;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error, 'order not Found');
     }
-  };
-  deleteOrder = async (num) => {
-    const deleteOrder = this.orderRepository.findOneBy({
-      id: parseFloat(num),
-    });
+  }
+  async deleteSingleOrder(num) {
     try {
-      this.orderRepository.remove(await deleteOrder);
-      console.log('deleted');
+      return Order.delete(num);
     } catch (error) {
-      console.log('ORDER NOT FOUND');
+      console.log(error);
       throw new InternalServerErrorException(error, 'order did not Deleted');
     }
-  };
-  putOrder = async (num, orderData: any) => {
-    const updateOrder = await this.orderRepository.findOneBy({
-      id: parseFloat(num),
-    });
+  }
+  async putOrder(num, orderData: any) {
     try {
-      const { name, lastname, orderItems } = orderData;
+      const updateOrder = await Order.findOne({
+        id: parseInt(num),
+      });
+
+      const { name, lastName, orderItems } = orderData;
       if (name) updateOrder.name = name;
-      if (lastname) updateOrder.lastName = lastname;
+
+      if (lastName) updateOrder.lastName = lastName;
+
       if (orderItems) updateOrder.orderItems = orderItems;
-      this.orderRepository.save(updateOrder);
-      return updateOrder;
+      console.log(updateOrder);
+      // await Order.save(updateOrder);
+      await updateOrder.save();
+      return Order.findOne({
+        id: parseInt(num),
+      });
     } catch (error) {
-      console.log('ORDER NOT FOUND');
+      console.log(error);
       throw new InternalServerErrorException(error, 'order did not updated');
     }
-  };
+  }
 }

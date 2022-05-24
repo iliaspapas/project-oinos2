@@ -8,38 +8,31 @@ import {
   Delete,
   Put,
 } from '@nestjs/common';
-import { OrderService } from './order.service';
+import OrderService from './order.service';
 
-@Controller()
+@Controller('orders')
 export class OrderController {
-  ordersService: any;
-  constructor(private readonly appService: OrderService) {}
+  constructor(private orderService: OrderService) {}
 
   @Post()
-  addOrder(@Body() body: any): any {
-    return this.ordersService.insertOrder(body);
+  addOrder(@Body() body: any) {
+    return this.orderService.insertOrder(body);
   }
   @Get()
   getAllOrders() {
-    return this.ordersService.getOrders();
+    return this.orderService.getOrders();
   }
 
-  @Get(':id')
-  getOrder(@Param('/:id') orderId: string) {
-    if (this.ordersService.getSingleOrder(orderId)) {
-      return this.ordersService.getSingleOrder(orderId);
-    } else {
-      throw new NotFoundException('Coud not find order');
-    }
+  @Get(':orderid')
+  getOrder(@Param('orderid') orderId) {
+    return this.orderService.getSingleOrder(orderId);
   }
-  @Delete(':id')
-  deleteOrder(@Param('/:id') orderId: string) {
-    if (this.ordersService.deleteSingleOrder(orderId)) {
-      return 'Order deleted';
-    }
+  @Delete(':orderid')
+  deleteOrder(@Param('orderid') orderId) {
+    return this.orderService.deleteSingleOrder(orderId);
   }
-  @Put()
-  updateOrder(@Param('/:id') orderId: string, @Body() body: any): any {
-    return this.ordersService.insertOrder(orderId, body);
+  @Put(':orderid')
+  updateOrder(@Param('orderid') orderId, @Body() body: any): any {
+    return this.orderService.putOrder(orderId, body);
   }
 }

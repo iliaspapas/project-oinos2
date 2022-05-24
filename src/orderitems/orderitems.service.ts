@@ -3,21 +3,15 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Order } from 'src/entities/order';
-import { OrderItem } from 'src/entities/orderitem';
-import { Wine } from 'src/entities/wines';
-import { Repository } from 'typeorm';
+import Order from 'src/entities/order';
+import OrderItem from 'src/entities/orderitem';
+import Wine from 'src/entities/wines';
+import { getRepository } from 'typeorm';
 
 @Injectable()
 export class OrderitemsService {
-  constructor(
-    @Inject('ORDERITEM_REPOSITORY')
-    private itemRepository: Repository<OrderItem>,
-    private orderRepository: Repository<Order>,
-  ) {}
-  private orderItem: OrderItem[] = [];
   insertItem = async (itemData: any) => {
-    // const wineRepository = await AppDataSource.getRepository(Wine);
+    const itemRepository = getRepository(OrderItem);
     const newItem = new OrderItem();
     const { wine, quantity, orderid } = itemData;
     // if (!(await itemRepository.findOneBy({ wine }))) {
@@ -29,10 +23,11 @@ export class OrderitemsService {
     //}
     newItem.quantity = quantity;
     // if (await orderRepository.findOneBy({ id: orderid })) {
-    newItem.order = await this.orderRepository.findOneBy({ id: orderid });
+    newItem.order = await Order.findOne({ id: orderid });
     //} else return false;
+    const item = await itemRepository.findOne(1, { relations: ['wine'] });
     try {
-      this.itemRepository.save(newItem);
+      await OrderItem.save(newItem);
       return newItem;
     } catch (error) {
       console.log(error);
@@ -44,44 +39,41 @@ export class OrderitemsService {
     // }
   };
   getItem = async () => {
-    return this.itemRepository.find();
+    return OrderItem.find();
   };
   getSingleItem = async (num) => {
     try {
-      const foundItems = this.itemRepository.findOneBy({ id: parseFloat(num) });
-      return foundItems;
+      return OrderItem.findOne({ id: parseFloat(num) });
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException(error, 'Wine not Found');
+      throw new InternalServerErrorException(error, 'Item not Found');
     }
   };
-  deleteItem = async (num) => {
+  deleteSingleItems = async (num) => {
     try {
-      const deleteItems = this.itemRepository.findOneBy({
-        id: parseFloat(num),
-      });
-      this.itemRepository.remove(await deleteItems);
+      return OrderItem.delete(num);
       console.log('deleted');
     } catch (error) {
-      console.log('ITEM NOT FOUND');
+      console.log(error);
       throw new InternalServerErrorException(error, 'Item did not Deleted');
     }
   };
   putItem = async (num, itemData: any) => {
-    const { wine, quantity } = itemData;
-    const updateItems = await this.itemRepository.findOneBy({
-      id: parseFloat(num),
-    });
-
-    if (!updateItems) {
-      console.log('ITEM NOT FOUND');
-      return false;
-    } else {
+    try {
+      const { wine, quantity } = itemData;
+      const updateItems = await OrderItem.findOne({
+        id: parseFloat(num),
+      });
       if (quantity) updateItems.quantity = quantity;
       if (wine) updateItems.wine = wine;
-      this.itemRepository.save(updateItems);
+      await OrderItem.save(updateItems);
 
-      return updateItems;
+      return OrderItem.findOne({
+        id: parseFloat(num),
+      });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(error, 'Item did not Deleted');
     }
   };
 }

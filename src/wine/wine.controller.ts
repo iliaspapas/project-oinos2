@@ -9,10 +9,9 @@ import {
   Put,
 } from '@nestjs/common';
 import { WineService } from './wine.service';
-@Controller('wine')
+@Controller('wines')
 export class WineController {
-  wineService: any;
-  constructor(private readonly appService: WineService) {}
+  constructor(private readonly wineService: WineService) {}
   @Post()
   addWine(@Body() body: any): any {
     return this.wineService.insertWine(body);
@@ -22,7 +21,7 @@ export class WineController {
     return this.wineService.getWines();
   }
   @Get(':id')
-  getWine(@Param('/:id') wineId: string) {
+  getWine(@Param('id') wineId: string) {
     if (this.wineService.getSingleWine(wineId)) {
       return this.wineService.getSingleWine(wineId);
     } else {
@@ -30,13 +29,11 @@ export class WineController {
     }
   }
   @Delete(':id')
-  deleteWine(@Param('/:id') wineId: string) {
-    if (this.wineService.deleteSingleWine(wineId)) {
-      return 'Wine deleted';
-    }
+  deleteWine(@Param('id') wineId: string) {
+    this.wineService.deleteSingleWine(wineId);
   }
-  @Put()
-  updateWine(@Param('/:id') wineId: string, @Body() body: any): any {
-    return this.wineService.insertWine(wineId, body);
+  @Put(':id')
+  updateWine(@Param('id') wineId: string, @Body() body: any): any {
+    return this.wineService.putWine(wineId, body);
   }
 }

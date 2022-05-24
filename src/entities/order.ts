@@ -1,7 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
-import { OrderItem } from './orderitem';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  BaseEntity,
+  JoinTable,
+} from 'typeorm';
+import OrderItem from './orderitem';
+
 @Entity()
-export class Order {
+export default class Order extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -14,6 +22,6 @@ export class Order {
   @ManyToMany(() => OrderItem, (orderItems) => orderItems.order, {
     cascade: true,
   })
-  @Column('int', { array: true })
+  @JoinTable()
   orderItems: OrderItem[];
 }

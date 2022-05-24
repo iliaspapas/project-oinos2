@@ -6,11 +6,12 @@ import {
   Relation,
   ManyToMany,
   ManyToOne,
+  BaseEntity,
 } from 'typeorm';
-import { Order } from './order';
-import { Wine } from './wines';
+import Order from './order';
+import Wine from './wines';
 @Entity()
-export class OrderItem {
+export default class OrderItem extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -22,5 +23,6 @@ export class OrderItem {
   quantity: number;
 
   @ManyToMany(() => Order, (order) => order.orderItems)
+  cascade: ['insert', 'update'];
   order: Relation<Order>;
 }

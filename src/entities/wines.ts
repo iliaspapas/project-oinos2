@@ -3,13 +3,13 @@ import {
   Column,
   PrimaryGeneratedColumn,
   Double,
-  OneToOne,
-  Relation,
+  BaseEntity,
+  OneToMany,
 } from 'typeorm';
-import { OrderItem } from './orderitem';
+import OrderItem from './orderitem';
 
 @Entity()
-export class Wine {
+export default class Wine extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,4 +21,7 @@ export class Wine {
 
   @Column('numeric')
   price: Double;
+
+  @OneToMany(() => OrderItem, (item) => item.id)
+  item: OrderItem;
 }
