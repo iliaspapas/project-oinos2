@@ -19,13 +19,24 @@ export default class OrderService {
     }
   }
   async getOrders() {
-    return Order.find({});
+    try {
+      const orderRepository = getRepository(Order);
+      const order = await orderRepository.find({
+        relations: ['orderItems'],
+      });
+      return order;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(error, 'order not Found');
+    }
   }
   async getSingleOrder(num: any) {
     try {
-      return Order.findOne({
-        id: parseFloat(num),
+      const orderRepository = getRepository(Order);
+      const order = await orderRepository.findOne(num, {
+        relations: ['orderItems'],
       });
+      return order;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error, 'order not Found');
@@ -40,6 +51,7 @@ export default class OrderService {
     }
   }
   async putOrder(num, orderData: any) {
+    const orderRepository = getRepository(Order);
     try {
       const updateOrder = await Order.findOne({
         id: parseInt(num),
@@ -53,10 +65,8 @@ export default class OrderService {
       if (orderItems) updateOrder.orderItems = orderItems;
       console.log(updateOrder);
       // await Order.save(updateOrder);
-      await updateOrder.save();
-      return Order.findOne({
-        id: parseInt(num),
-      });
+
+      return updateOrder.save();
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error, 'order did not updated');

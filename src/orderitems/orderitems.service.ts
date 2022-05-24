@@ -11,7 +11,6 @@ import { getRepository } from 'typeorm';
 @Injectable()
 export class OrderitemsService {
   insertItem = async (itemData: any) => {
-    const itemRepository = getRepository(OrderItem);
     const newItem = new OrderItem();
     const { wine, quantity, orderid } = itemData;
     // if (!(await itemRepository.findOneBy({ wine }))) {
@@ -25,10 +24,9 @@ export class OrderitemsService {
     // if (await orderRepository.findOneBy({ id: orderid })) {
     newItem.order = await Order.findOne({ id: orderid });
     //} else return false;
-    const item = await itemRepository.findOne(1, { relations: ['wine'] });
+
     try {
-      await OrderItem.save(newItem);
-      return newItem;
+      return OrderItem.save(newItem);
     } catch (error) {
       console.log(error);
       return false;
@@ -39,11 +37,24 @@ export class OrderitemsService {
     // }
   };
   getItem = async () => {
-    return OrderItem.find();
+    try {
+      const itemRepository = getRepository(OrderItem);
+      const item = await itemRepository.find({
+        relations: ['wine'],
+      });
+      return item;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(error, 'Item not Found');
+    }
   };
   getSingleItem = async (num) => {
     try {
-      return OrderItem.findOne({ id: parseFloat(num) });
+      const itemRepository = getRepository(OrderItem);
+      const item = await itemRepository.findOne(num, {
+        relations: ['wine'],
+      });
+      return item;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error, 'Item not Found');
@@ -66,14 +77,11 @@ export class OrderitemsService {
       });
       if (quantity) updateItems.quantity = quantity;
       if (wine) updateItems.wine = wine;
-      await OrderItem.save(updateItems);
-
-      return OrderItem.findOne({
-        id: parseFloat(num),
-      });
+      console.log(updateItems);
+      return updateItems.save();
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException(error, 'Item did not Deleted');
+      throw new InternalServerErrorException(error, 'Item did not Updated');
     }
   };
 }

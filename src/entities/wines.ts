@@ -5,6 +5,7 @@ import {
   Double,
   BaseEntity,
   OneToMany,
+  Relation,
 } from 'typeorm';
 import OrderItem from './orderitem';
 
@@ -23,5 +24,6 @@ export default class Wine extends BaseEntity {
   price: Double;
 
   @OneToMany(() => OrderItem, (item) => item.id)
+  cascade: ['insert', 'update'];
   item: OrderItem;
 }
