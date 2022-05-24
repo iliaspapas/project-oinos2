@@ -37,7 +37,7 @@ export class WineService {
   };
   deleteSingleWine = async (num) => {
     try {
-      await OrderItem.delete({ wine: num });
+      // await OrderItem.delete({ wine: num });
       return Wine.delete(num);
       console.log('deleted');
     } catch (error) {
