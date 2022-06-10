@@ -22,7 +22,8 @@ export default class OrderItem extends BaseEntity {
   @Column()
   quantity: number;
 
-  @ManyToMany(() => Order, (order) => order.orderItems)
-  cascade: ['insert', 'update'];
-  order: Relation<Order>;
+  @ManyToMany(() => Order, (order) => order.orderItems, {
+    cascade: ['insert', 'update'],
+  })
+  order: Order;
 }

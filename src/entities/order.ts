@@ -1,3 +1,4 @@
+import { type } from 'os';
 import {
   Entity,
   Column,
@@ -5,6 +6,7 @@ import {
   ManyToMany,
   BaseEntity,
   JoinTable,
+  Relation,
 } from 'typeorm';
 import OrderItem from './orderitem';
 
@@ -18,6 +20,9 @@ export default class Order extends BaseEntity {
 
   @Column()
   lastName: string;
+
+  @Column()
+  status: boolean;
 
   @ManyToMany(() => OrderItem, (orderItems) => orderItems.order, {
     cascade: true,

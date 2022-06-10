@@ -23,7 +23,8 @@ export default class Wine extends BaseEntity {
   @Column('numeric')
   price: Double;
 
-  @OneToMany(() => OrderItem, (item) => item.id)
-  cascade: ['insert', 'update'];
+  @OneToMany(() => OrderItem, (item) => item.id, {
+    cascade: ['insert', 'update'],
+  })
   item: OrderItem;
 }

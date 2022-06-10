@@ -10,7 +10,7 @@ export default class OrderService {
     newOrder.name = name;
     newOrder.lastName = lastName;
     newOrder.orderItems = orderItems;
-
+    newOrder.status = true;
     try {
       return Order.save(newOrder);
     } catch (error) {
@@ -30,7 +30,7 @@ export default class OrderService {
       throw new InternalServerErrorException(error, 'order not Found');
     }
   }
-  async getSingleOrder(num: any) {
+  async getSingleOrder(num: string) {
     try {
       const orderRepository = getRepository(Order);
       const order = await orderRepository.findOne(num, {
@@ -42,27 +42,30 @@ export default class OrderService {
       throw new InternalServerErrorException(error, 'order not Found');
     }
   }
-  async deleteSingleOrder(num) {
+  async statusOrder(num, orderStatus: boolean) {
     try {
-      return Order.delete(num);
+      const updateOrder = await Order.findOne({
+        id: parseInt(num),
+      });
+      if (orderStatus) updateOrder.status = orderStatus;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error, 'order did not Deleted');
     }
   }
   async putOrder(num, orderData: any) {
-    const orderRepository = getRepository(Order);
     try {
       const updateOrder = await Order.findOne({
         id: parseInt(num),
       });
 
-      const { name, lastName, orderItems } = orderData;
+      const { name, lastName, orderItems, orderStatus } = orderData;
       if (name) updateOrder.name = name;
 
       if (lastName) updateOrder.lastName = lastName;
 
       if (orderItems) updateOrder.orderItems = orderItems;
+      if (orderStatus) updateOrder.status = orderStatus;
       console.log(updateOrder);
       // await Order.save(updateOrder);
 

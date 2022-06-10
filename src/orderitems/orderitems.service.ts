@@ -29,18 +29,18 @@ export class OrderitemsService {
       return OrderItem.save(newItem);
     } catch (error) {
       console.log(error);
-      return false;
+      throw new InternalServerErrorException(error, 'Item not saved');
     }
     //} else {
     //console.log("item already exists");
     //return false;
     // }
   };
-  getItem = async () => {
+  getItems = async () => {
     try {
       const itemRepository = getRepository(OrderItem);
       const item = await itemRepository.find({
-        relations: ['wine'],
+        relations: ['wine', 'order'],
       });
       return item;
     } catch (error) {
@@ -52,7 +52,7 @@ export class OrderitemsService {
     try {
       const itemRepository = getRepository(OrderItem);
       const item = await itemRepository.findOne(num, {
-        relations: ['wine'],
+        relations: ['wine', 'order'],
       });
       return item;
     } catch (error) {
@@ -60,15 +60,14 @@ export class OrderitemsService {
       throw new InternalServerErrorException(error, 'Item not Found');
     }
   };
-  deleteSingleItems = async (num) => {
-    try {
-      return OrderItem.delete(num);
-      console.log('deleted');
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(error, 'Item did not Deleted');
-    }
-  };
+  // deleteSingleItems = async (num) => {
+  //   try {
+  //     return OrderItem.delete(num);
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw new InternalServerErrorException(error, 'Item did not Deleted');
+  //   }
+  // };
   putItem = async (num, itemData: any) => {
     try {
       const { wine, quantity } = itemData;
@@ -81,7 +80,7 @@ export class OrderitemsService {
       return updateItems.save();
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException(error, 'Item did not Updated');
+      throw new InternalServerErrorException(error, 'Item did not Updatedj');
     }
   };
 }

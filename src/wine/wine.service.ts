@@ -3,9 +3,8 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import OrderItem from 'src/entities/orderitem';
-import Wine from 'src/entities/wines';
 
+import Wine from 'src/entities/wines';
 @Injectable()
 export class WineService {
   insertWine = async (wineData: any) => {
@@ -26,25 +25,15 @@ export class WineService {
   };
   getSingleWine = async (num) => {
     try {
-      const foundWine = await Wine.findOne({
+      return Wine.findOne({
         id: parseFloat(num),
       });
-      return foundWine;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error, 'Wine not Found');
     }
   };
-  deleteSingleWine = async (num) => {
-    try {
-      // await OrderItem.delete({ wine: num });
-      return Wine.delete(num);
-      console.log('deleted');
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(error, 'Wine did not Deleted');
-    }
-  };
+
   putWine = async (num, wineData: any) => {
     try {
       const updateWine = await Wine.findOne({
