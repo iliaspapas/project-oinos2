@@ -12,7 +12,13 @@ async function bootstrap() {
       cookei: { maxAge: 360000 },
     }),
   );
+  passport.serializeUser(function (user, done) {
+    done(null, user);
+  });
 
+  passport.deserializeUser(function (user, done) {
+    done(null, user);
+  });
   app.use(passport.initialize());
   app.use(passport.session());
   await app.listen(3000);

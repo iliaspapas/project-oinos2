@@ -1,14 +1,13 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import Users from 'src/entities/users';
-import { getRepository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
   getUser = async (username: string) => {
     try {
-      const user = await Users.findOne(username);
-      console.log(user);
-      return user;
+      const users = await Users.find({ where: { username } });
+      console.log(users);
+      return users[0];
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error, 'User not Found');
@@ -43,12 +42,12 @@ export class UsersService {
   insertUser = async (userData: any) => {
     try {
       const newUser = new Users();
-      const { name, username, password, role } = userData;
+      const { name, username, password } = userData;
       newUser.name = name;
       newUser.username = username;
       newUser.password = password;
-      newUser.role = role;
-      return Users.save(newUser);
+      console.log(newUser);
+      return newUser.save();
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error, 'User not saved');

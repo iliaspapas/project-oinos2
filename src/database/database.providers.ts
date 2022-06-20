@@ -2,7 +2,7 @@ import Order from '../entities/order';
 import OrderItem from '../entities/orderitem';
 import Wine from '../entities/wines';
 import { createConnection } from 'typeorm';
-import Users from 'src/entities/users';
+import Users from '../entities/users';
 
 export const databaseProviders = [
   {
@@ -15,7 +15,7 @@ export const databaseProviders = [
         username: 'postgres',
         password: 'password',
         database: 'oinos',
-        entities: [Order, Wine, OrderItem, Users],
+        entities: [Users, Order, Wine, OrderItem],
         synchronize: true,
       }),
   },

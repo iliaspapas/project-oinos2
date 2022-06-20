@@ -7,26 +7,36 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Role } from './roles';
+import { ConsoleLogger } from '@nestjs/common';
+
 @Entity()
-export default class Users extends BaseEntity {
+export default class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    nullable: false,
+    unique: true,
+  })
   username: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
   password: string;
 
   @Column({ type: 'enum', enum: Role, default: Role.User })
   role: Role;
 
   @BeforeInsert()
-  async setPassword(password: string) {
+  async setPassword() {
     const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(password, salt);
+
+    this.password = await bcrypt.hash(this.password, salt);
   }
 }

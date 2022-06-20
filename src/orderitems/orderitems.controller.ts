@@ -9,7 +9,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { Role } from 'src/entities/roles';
-import { Roles } from 'src/users/roles.decorator';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 import { OrderitemsService } from './orderitems.service';
 @Controller('orderitems')
 export class OrderitemsController {
