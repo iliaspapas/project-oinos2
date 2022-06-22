@@ -14,31 +14,28 @@ import { OrderitemsService } from './orderitems.service';
 @Controller('orderitems')
 export class OrderitemsController {
   constructor(private readonly itemsService: OrderitemsService) {}
-  @Post()
   @Roles(Role.Admin)
+  @Post()
   addItems(@Body() body: any): any {
     return this.itemsService.insertItem(body);
   }
-  @Get()
   @Roles(Role.Admin)
+  @Get()
   getAllItems() {
     return this.itemsService.getItems();
   }
-  @Get(':id')
+
   @Roles(Role.Admin)
+  @Get(':id')
   getItem(@Param('id') itemsId: string) {
-    if (this.itemsService.getSingleItem(itemsId)) {
-      return this.itemsService.getSingleItem(itemsId);
-    } else {
-      throw new NotFoundException('Coud not find Item');
-    }
+    return this.itemsService.getSingleItem(itemsId);
   }
   // @Delete(':id')
   // deleteItem(@Param('id') itemsId: string) {
   //   return this.itemsService.deleteSingleItems(itemsId);
   // }
-  @Put(':id')
   @Roles(Role.Admin)
+  @Put(':id')
   updateItem(@Param('id') itemsId: string, @Body() body: any): any {
     return this.itemsService.putItem(itemsId, body);
   }

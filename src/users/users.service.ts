@@ -1,8 +1,12 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import User from 'src/entities/users';
 import Users from 'src/entities/users';
 
 @Injectable()
 export class UsersService {
+  getAllUsers = async () => {
+    return User.find();
+  };
   getUser = async (username: string) => {
     try {
       const users = await Users.find({ where: { username } });

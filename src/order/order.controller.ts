@@ -15,22 +15,22 @@ import OrderService from './order.service';
 @Controller('orders')
 export class OrderController {
   constructor(private orderService: OrderService) {}
-
+  @Roles(Role.Admin, Role.User)
   @Post()
   addOrder(@Body() body: any) {
     return this.orderService.insertOrder(body);
   }
-  @Get()
   @Roles(Role.Admin)
+  @Get()
   getAllOrders() {
     return this.orderService.getOrders();
   }
-
-  @Get(':orderid')
   @Roles(Role.Admin)
+  @Get(':orderid')
   getOrder(@Param('orderid') orderId) {
     return this.orderService.getSingleOrder(orderId);
   }
+  @Roles(Role.Admin, Role.User)
   @Put(':orderid')
   updateOrder(@Param('orderid') orderId, @Body() body: any): any {
     return this.orderService.putOrder(orderId, body);

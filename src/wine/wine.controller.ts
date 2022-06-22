@@ -14,18 +14,19 @@ import { WineService } from './wine.service';
 @Controller('wines')
 export class WineController {
   constructor(private readonly wineService: WineService) {}
-  @Post()
+
   @Roles(Role.Admin)
+  @Post()
   addWine(@Body() body: any): any {
     return this.wineService.insertWine(body);
   }
-  @Get()
   @Roles(Role.Admin)
+  @Get()
   getAllWine() {
     return this.wineService.getWines();
   }
-  @Get(':id')
   @Roles(Role.Admin)
+  @Get(':id')
   getWine(@Param('id') wineId: string) {
     if (this.wineService.getSingleWine(wineId)) {
       return this.wineService.getSingleWine(wineId);
@@ -37,8 +38,8 @@ export class WineController {
   // deleteWine(@Param('id') wineId: string) {
   //   return this.wineService.deleteSingleWine(wineId);
   // }
-  @Put(':id')
   @Roles(Role.Admin)
+  @Put(':id')
   updateWine(@Param('id') wineId: string, @Body() body: any): any {
     return this.wineService.putWine(wineId, body);
   }
