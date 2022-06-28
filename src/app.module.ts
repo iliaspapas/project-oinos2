@@ -11,15 +11,22 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { RolesGuard } from './auth/guard/roles.guard';
 import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
+import { Configuration } from './config/config.service';
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      load: [configuration],
+      isGlobal: true,
+      envFilePath: 'config.env',
+    }),
+    Configuration,
     OrderModule,
     WineModule,
     OrderitemsModule,
     DatabaseModule,
     UsersModule,
     AuthModule,
-    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [

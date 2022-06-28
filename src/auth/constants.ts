@@ -1,3 +1,3 @@
 export const jwtConstants = {
-  secret: 'oinos',
+  secret: process.env.APP_SECRET,
 };
