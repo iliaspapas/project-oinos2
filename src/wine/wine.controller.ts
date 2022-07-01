@@ -11,13 +11,15 @@ import {
 import { Role } from 'src/entities/roles';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { WineService } from './wine.service';
+import { WinePostDto } from 'src/dto/winedto/wine.post.dto';
+import { WinePutDto } from 'src/dto/winedto/wine.put.dto';
 @Controller('wines')
 export class WineController {
   constructor(private readonly wineService: WineService) {}
 
   @Roles(Role.Admin)
   @Post()
-  addWine(@Body() body: any): any {
+  addWine(@Body() body: WinePostDto) {
     return this.wineService.insertWine(body);
   }
   @Roles(Role.Admin)
@@ -40,7 +42,7 @@ export class WineController {
   // }
   @Roles(Role.Admin)
   @Put(':id')
-  updateWine(@Param('id') wineId: string, @Body() body: any): any {
+  updateWine(@Param('id') wineId: string, @Body() body: WinePutDto) {
     return this.wineService.putWine(wineId, body);
   }
 }

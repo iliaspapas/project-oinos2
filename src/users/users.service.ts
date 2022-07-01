@@ -22,6 +22,7 @@ export class UsersService {
       const updateUser = await Users.findOne({
         id: parseFloat(id),
       });
+      // updateUser = Object.assign({}, userData);
       const { name, username, password, role } = userData;
       if (name) updateUser.name = name;
       if (username) updateUser.username = username;

@@ -13,22 +13,21 @@ import { Public } from '../auth/decorator/public.decor';
 import { Role } from '../entities/roles';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { UsersService } from './users.service';
-import { RolesGuard } from '../auth/guard/roles.guard';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-
+import { UserPostDto } from 'src/dto/userdto/user.postroute.dto';
+import { UserPutDto } from 'src/dto/userdto/userud.putroute.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @Public()
   @Post('register')
-  addUser(@Body() body: any): any {
+  addUser(@Body() body: UserPostDto) {
     return this.userService.insertUser(body);
   }
 
   @Roles(Role.Admin)
   @Put(':id')
-  updateUser(@Param('id') userId: string, @Body() body: any): any {
+  updateUser(@Param('id') userId: string, @Body() body: UserPutDto) {
     return this.userService.updateUser(userId, body);
   }
   @Roles(Role.Admin)

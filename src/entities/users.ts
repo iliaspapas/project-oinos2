@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Role } from './roles';
-import { ConsoleLogger } from '@nestjs/common';
 
 @Entity()
 export default class User extends BaseEntity {
